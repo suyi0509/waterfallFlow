@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Form, Slider, Space, InputNumber, Radio } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import './index.scss';

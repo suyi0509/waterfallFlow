@@ -16,7 +16,7 @@ const WaterfallLayout = (props) => {
 
   // 在组件挂载和 items 状态更新时执行布局计算
   useEffect(() => {
-    const newItem = new Array(model.number).fill({}).map((item, index) => ({
+    const newItem = new Array(model.number).fill({}).map((_item, index) => ({
       height: Math.floor(Math.random() * 300) + 100,
       key: index + 1,
     }));
@@ -46,8 +46,8 @@ const WaterfallLayout = (props) => {
         shortestColumn.push(item);
       } else {
         // 按列走
-        const rowIndex = Math.floor(item.key / colNum);
-        newColumns[rowIndex].push(item);
+        const rowIndex = Math.ceil(item.key / colNum);
+        newColumns[rowIndex -1 ] && newColumns[rowIndex-1].push(item);
       }
     });
     setColumns(newColumns);
