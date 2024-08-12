@@ -1,6 +1,7 @@
-import { Button, Form, Slider, Space, InputNumber, Radio } from 'antd';
+import { Button, Form, Slider, Space, InputNumber, Radio, Modal } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 import './index.scss';
+import { useEffect, useState } from 'react';
 
 // 列数 2 - 3 -4 -5 -6
 // 个数
@@ -17,18 +18,25 @@ const options = [
 
 const Setting = (props: IProps) => {
   const { onSubmit } = props;
+  const [form] = Form.useForm();
+  const [mediaType, setMediaType] = useState('PC');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth < 600) {
+      setMediaType('h5');
+    }
+  }, []);
 
   const formItemLayout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 18 },
   };
-  return (
-    <div className='setting_box'>
-      <div className='title'>
-        设置项
-        <SettingOutlined style={{ color: '#1677ff', marginLeft: '8px' }} />
-      </div>
+
+  const renderForm = () => {
+    return (
       <Form
+        className='form'
         name='validate_other'
         {...formItemLayout}
         onFinish={onSubmit}
@@ -37,9 +45,10 @@ const Setting = (props: IProps) => {
           col: 4,
           direction: 'row',
         }}
+        form={form}
       >
         <Form.Item name='col' label='列数'>
-          <Slider tooltip={{ open: true }} min={1} max={10} />
+          <Slider min={1} max={10} />
         </Form.Item>
         <Form.Item name='number' label='个数'>
           <InputNumber min={1} max={999} />
@@ -50,13 +59,42 @@ const Setting = (props: IProps) => {
 
         <Form.Item wrapperCol={{ offset: 12 }}>
           <Space>
-            <Button type='primary' htmlType='submit'>
+            <Button
+              type='primary'
+              htmlType='submit'
+              onClick={() => setIsModalOpen(false)}
+            >
               保存
             </Button>
             <Button htmlType='reset'>重置</Button>
           </Space>
         </Form.Item>
       </Form>
+    );
+  };
+
+  return (
+    <div className='setting_box'>
+      <div className='title'>
+        设置项
+        <SettingOutlined
+          onClick={() => {
+            mediaType === 'h5' && setIsModalOpen(true);
+          }}
+          style={{ color: '#1677ff', marginLeft: '8px' }}
+        />
+      </div>
+      {mediaType === 'h5' ? (
+        <Modal
+          open={isModalOpen}
+          footer={null}
+          onCancel={() => setIsModalOpen(false)}
+        >
+          {isModalOpen && renderForm()}
+        </Modal>
+      ) : (
+        renderForm()
+      )}
     </div>
   );
 };
